@@ -3,8 +3,7 @@ import './App.css';
 import axios from 'axios';
 
 function App() {
-  // const keyNum = "84b67f0a-5968-42bb-bdfc-4269e9cb92fc";
-  const REST_API_KEY = "08d73f76a3f730c0bf7275139fe41bbf";
+  const keyNum = "84b67f0a-5968-42bb-bdfc-4269e9cb92fc";
   const currentPage = 1;
   const listCnt = 10;
   const [userData, setUserData] = useState([])
@@ -14,22 +13,21 @@ function App() {
     try {
       setLoading(true)
 
-      const response = await axios.get(`https://dapi.kakao.com/v3/search/book?target=title`, {
-        params:{
-          query:'미움받을 용기',
-          sort:'latest'
-        },
-        headers:{
-          Authorization: `KakaoAK ${REST_API_KEY}`
-        },
-      })
-      console.log(response.data);
-      // setUserData(response.data.response.body.items.item)
+      const response = await axios.get(`http://api.kcisa.kr/openapi/API_CNV_060/request?serviceKey=${keyNum}&numOfRows=${listCnt}&pageNo=${currentPage}`)
+      setUserData(response.data.response.body.items.item)
     } catch (error) {
       console.error("error title : " + error);
     }finally{
       setLoading(false)
     }
+    // axios.get(`http://api.kcisa.kr/openapi/API_CNV_060/request?serviceKey=${keyNum}&numOfRows=${listCnt}&pageNo=${currentPage}`)
+    //       .then((response)=>{
+    //         console.log(response);
+    //         setUserData(response.data.response.body.items.item)
+    //       })
+    //       .catch((error)=>{
+    //         console.log(error);
+    //       })
   }
 
   useEffect(()=>{
