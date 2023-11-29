@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,27 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a:link,a:visited{
+  text-decoration: none;
+  color: #333;
+}
+
+ul,li{
+  list-style: none;
+}
+
+.pagenation{
+  display: flex;
+}
+
+.pagenation .num{
+  padding: 10px;
 }
