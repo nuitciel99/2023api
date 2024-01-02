@@ -14,6 +14,6 @@ https://www.kcisa.kr/
 
 ![api 목록](./readMeImg/apilist.png)
 
-![검색](./readMeImg/search.png.png)
+![검색](./readMeImg/search.png)
 
-![페이징](./readMeImg/paging.png.png)
+![페이징](./readMeImg/paging.png)
