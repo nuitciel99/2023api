@@ -1,65 +1,97 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 function App() {
   const keyNum = "84b67f0a-5968-42bb-bdfc-4269e9cb92fc";
-  const currentPage = 1;
   const listCnt = 10;
-  const [userData, setUserData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const currentPage = 1;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [useData, setUseData] = useState([]);
+  const [totalpages, setTotalpages] = useState(0);
 
   const callApi = async (currentPage) => {
     try {
-      setLoading(true);
-
       const response = await axios.get(
         `http://api.kcisa.kr/openapi/API_CNV_060/request?serviceKey=${keyNum}&numOfRows=${listCnt}&pageNo=${currentPage}`
       );
-      setUserData(response.data.response.body.items.item);
+
+      console.log(response.data);
+      setUseData(response.data.response.body.items.item);
+      setTotalpages(response.data.response.body.totalCount / listCnt);
     } catch (error) {
-      console.error("error title : " + error);
-    } finally {
-      setLoading(false);
+      console.error(error);
     }
-    // axios.get(`http://api.kcisa.kr/openapi/API_CNV_060/request?serviceKey=${keyNum}&numOfRows=${listCnt}&pageNo=${currentPage}`)
-    //       .then((response)=>{
-    //         console.log(response);
-    //         setUserData(response.data.response.body.items.item)
-    //       })
-    //       .catch((error)=>{
-    //         console.log(error);
-    //       })
   };
 
   useEffect(() => {
     callApi(currentPage);
-  }, []);
+  }, [currentPage]);
+
+  const pageViewNumbers = () => {
+    const pageNumbers = [];
+    const startPage = Math.floor((currentPage - 1) / listCnt) * listCnt + 1;
+    const endPage = startPage + listCnt - 1;
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <span
+          className={`page-item ${currentPage === i ? "active" : ""}`}
+          key={i}
+          onClick={() => {
+            handlePageChange(i);
+          }}
+        >
+          <a className="page-link" href="#">
+            {i}
+          </a>
+        </span>
+      );
+    }
+    return pageNumbers;
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalpages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   return (
     <div className="App">
-      <h1>recommendation of tour API </h1>
-      {loading ? (
-        <div>loading...</div>
-      ) : (
-        <ul>
-          {userData.map((item, i) => {
-            return (
-              <div className="card">
-                <div className="cardTitle">
-                  <a href={item.url} target="_blank">
-                    {item.title}
-                  </a>
-                  <div
-                    className="cardText"
-                    dangerouslySetInnerHTML={{ __html: item.description }}
-                  ></div>
-                </div>
-              </div>
-            );
-          })}
+      <h1>문화관광부 Api</h1>
+
+      {useData.map(function (item, i) {
+        return <li key={i}>{item.title}</li>;
+      })}
+
+      <div>
+        <ul className="pagination">
+          <li
+            className="page-item"
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              handlePageChange(currentPage - 1);
+            }}
+          >
+            <a className="page-link">Previous</a>
+          </li>
+          {pageViewNumbers()}
+
+          <li
+            className="page-item"
+            onClick={() => {
+              handlePageChange(currentPage + 1);
+            }}
+            style={{ cursor: "pointer" }}
+          >
+            <a className="page-link" href="#">
+              Next
+            </a>
+          </li>
         </ul>
-      )}
+      </div>
     </div>
   );
 }
